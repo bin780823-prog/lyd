@@ -95,16 +95,20 @@ function showError(m){overlay.style.display='none';errBox.style.display='flex';e
 window.addEventListener('load',function(){
   if(typeof Dos==='undefined'){showError('js-dos 로드 실패.\n페이지를 새로고침해 주세요.');return;}
   setProgress(10,'DOSBox 초기화 중...');
-  var zipUrl=window.location.href.replace(/\/[^\/]*$/,'/')+' lyingdragon.zip';
-  zipUrl = zipUrl.replace(' ','');
+  var zipUrl=window.location.href.replace(/\/[^\/]*$/,'/')+'lyingdragon.zip';
   Dos(document.getElementById('jsdos'),{wdosboxUrl:'./wdosbox.js'}).ready(function(fs,main){
     setProgress(40,'게임 파일 로드 중...');
-    fs.extract(window.location.href.replace(/\/[^\/]*$/,'/')+'lyingdragon.zip').then(function(){
+    fs.extract(zipUrl).then(function(){
       setProgress(90,'와룡전 실행 중...');
-      return main(['-conf','dosbox_game.conf']);
-    }).then(function(){setTimeout(function(){overlay.style.display='none';},1500);
-    }).catch(function(e){showError('ZIP 로드 오류: '+(e.message||String(e)));});
-  }).catch(function(e){showError('DOSBox 초기화 오류: '+(e.message||String(e)));});
+      // mount 없이 직접 명령 실행 - js-dos가 이미 마운트함
+      return main([
+        '-c', 'YNSOUND /A220 /I7',
+        '-c', 'YNVSHELL.COM'
+      ]);
+    }).then(function(){
+      setTimeout(function(){overlay.style.display='none';},1500);
+    }).catch(function(e){showError('오류: '+(e.message||String(e)));});
+  }).catch(function(e){showError('DOSBox 오류: '+(e.message||String(e)));});
 });
 function toggleFullscreen(){var w=document.getElementById('screen-wrap');if(!document.fullscreenElement)(w.requestFullscreen||w.webkitRequestFullscreen).call(w);else(document.exitFullscreen||document.webkitExitFullscreen).call(document);}
 function restartGame(){if(confirm('게임을 재시작하시겠습니까?'))location.reload();}
