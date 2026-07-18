@@ -61,9 +61,8 @@ window.addEventListener('load',function(){
     sp(40,'게임 파일 로드 중...');
     fs.extract(base+'lyingdragon.zip').then(function(){
       sp(90,'와룡전 실행 중...');
-      // GRZ.BAT 순서대로: sgm 폰트 → 사운드 → 게임
+      // -tj 옵션 제거, 사운드 드라이버 제거 후 직접 게임 실행
       return main([
-        '-c', 'SGM -f GARYO.FNT -tj',
         '-c', 'YNSOUND /A220 /I7',
         '-c', 'YNVSHELL.COM'
       ]);
