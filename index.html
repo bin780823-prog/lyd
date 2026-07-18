@@ -43,7 +43,7 @@ footer { margin:32px auto; font-size:11px; color:#051208; letter-spacing:2px; }
 <div class="controls">
   <button class="btn" onclick="toggleFullscreen()">전체화면</button>
   <button class="btn" onclick="restartGame()">재시작</button>
-  <span class="hint">화면 클릭 후 키보드 사용 가능 · F5 저장 · F7 불러오기</span>
+  <span class="hint">화면 클릭 후 키보드 사용 가능 · 패스워드: 000000</span>
 </div>
 <footer>KOEI Co., Ltd. 1993 · 웹 에뮬레이션</footer>
 <script src="./js-dos.js"></script>
@@ -54,15 +54,21 @@ var o=document.getElementById('loading-overlay'),eb=document.getElementById('err
 function sp(p,m){fp.style.width=p+'%';st.textContent=m;}
 function se(m){o.style.display='none';eb.style.display='flex';ed.textContent=m;}
 window.addEventListener('load',function(){
-  if(typeof Dos==='undefined'){se('js-dos.js 로드 실패. 페이지를 새로고침해 주세요.');return;}
+  if(typeof Dos==='undefined'){se('js-dos.js 로드 실패.');return;}
   sp(10,'DOSBox 초기화 중...');
   var base=window.location.href.replace(/\/[^\/]*$/,'/');
   Dos(document.getElementById('jsdos'),{wdosboxUrl:base+'wdosbox.js'}).ready(function(fs,main){
     sp(40,'게임 파일 로드 중...');
     fs.extract(base+'lyingdragon.zip').then(function(){
       sp(90,'와룡전 실행 중...');
-      return main(['-c','YNSOUND /A220 /I7','-c','YNVSHELL.COM']);
-    }).then(function(){setTimeout(function(){o.style.display='none';},1500);
+      // GRZ.BAT 순서대로: sgm 폰트 → 사운드 → 게임
+      return main([
+        '-c', 'SGM -f GARYO.FNT -tj',
+        '-c', 'YNSOUND /A220 /I7',
+        '-c', 'YNVSHELL.COM'
+      ]);
+    }).then(function(){
+      setTimeout(function(){o.style.display='none';},1500);
     }).catch(function(e){se('오류: '+(e.message||String(e)));});
   }).catch(function(e){se('DOSBox 오류: '+(e.message||String(e)));});
 });
