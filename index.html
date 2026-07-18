@@ -61,8 +61,8 @@ window.addEventListener('load',function(){
     sp(40,'게임 파일 로드 중...');
     fs.extract(base+'lyingdragon.zip').then(function(){
       sp(90,'와룡전 실행 중...');
-      // YNSOUND 완전 제거, YNVSHELL만 직접 실행
-      return main(['-c', 'YNVSHELL.COM']);
+      // 오프닝 건너뛰고 게임 본체 KI.EXE 직접 실행
+      return main(['-c', 'KI.EXE']);
     }).then(function(){
       setTimeout(function(){o.style.display='none';},1500);
     }).catch(function(e){se('오류: '+(e.message||String(e)));});
